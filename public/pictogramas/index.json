@@ -1,0 +1,162 @@
+{
+    "configuracion_sistema": {
+        "nombre_proyecto": "TEA Web Pictogramas",
+        "version": "1.0",
+        "descripcion": "Mapeo de categorias para procesamiento con Ollama y CSV"
+    },
+    "fuentes_datos": {
+        "directorio_base": "public\\pictogramas",
+        "archivos_csv": [
+            {
+                "categoria": "acciones",
+                "ruta": "\\acciones",
+                "archivo": "acciones.csv",
+                "descripcion": "Verbos y actividades físicas o cotidianas"
+            },
+            {
+                "categoria": "animales",
+                "ruta": "\\animales",
+                "archivo": "animales.csv",
+                "descripcion": "Animales domésticos, salvajes e insectos"
+            },
+            {
+                "categoria": "aseo_personal",
+                "ruta": "\\aseo_personal",
+                "archivo": "aseo_personal.csv",
+                "descripcion": "Objetos y rutinas de limpieza del cuerpo"
+            },
+            {
+                "categoria": "comida",
+                "ruta": "\\comida",
+                "archivo": "comida.csv",
+                "descripcion": "Alimentos, frutas, verduras y bebidas"
+            },
+            {
+                "categoria": "deberes",
+                "ruta": "\\deberes",
+                "archivo": "deberes.csv",
+                "descripcion": "Responsabilidades y tareas asignadas"
+            },
+            {
+                "categoria": "emociones",
+                "ruta": "\\emociones",
+                "archivo": "emociones.csv",
+                "descripcion": "Estados de ánimo y expresiones faciales"
+            },
+            {
+                "categoria": "higiene",
+                "ruta": "\\higiene",
+                "archivo": "higiene.csv",
+                "descripcion": "Limpieza del entorno y hábitos sanitarios"
+            },
+            {
+                "categoria": "instrumentos_musicales",
+                "ruta": "\\instrumentos_musicales",
+                "archivo": "instrumentos_musicales.csv",
+                "descripcion": "Objetos que producen música y sonidos"
+            },
+            {
+                "categoria": "jardineria",
+                "ruta": "\\jardineria",
+                "archivo": "jardineria.csv",
+                "descripcion": "Herramientas de plantas y cuidado del jardín"
+            },
+            {
+                "categoria": "lugares",
+                "ruta": "\\lugares",
+                "archivo": "lugares.csv",
+                "descripcion": "Espacios públicos, habitaciones y establecimientos"
+            },
+            {
+                "categoria": "necesidades_basicas",
+                "ruta": "\\necesidades_basicas",
+                "archivo": "necesidades_basicas.csv",
+                "descripcion": "Hambre, sed, sueño y uso del baño"
+            },
+            {
+                "categoria": "ordenar_habitacion",
+                "ruta": "\\ordenar_habitacion",
+                "archivo": "ordenar_habitacion.csv",
+                "descripcion": "Organización de juguetes y muebles"
+            },
+            {
+                "categoria": "parientes",
+                "ruta": "\\parientes",
+                "archivo": "parientes.csv",
+                "descripcion": "Miembros de la familia y personas cercanas"
+            },
+            {
+                "categoria": "preparar_merienda",
+                "ruta": "\\preparar_merienda",
+                "archivo": "preparar_merienda.csv",
+                "descripcion": "Pasos para elaborar alimentos sencillos"
+            },
+            {
+                "categoria": "prueba",
+                "ruta": "\\prueba",
+                "archivo": "prueba.csv",
+                "descripcion": "Carpeta de test para nuevos pictogramas"
+            },
+            {
+                "categoria": "regulacion_emocional",
+                "ruta": "\\regulacion_emocional",
+                "archivo": "regulacion_emocional.csv",
+                "descripcion": "Técnicas de calma y manejo de crisis"
+            },
+            {
+                "categoria": "rutinas_terapia",
+                "ruta": "\\rutinas_terapia",
+                "archivo": "rutinas_terapia.csv",
+                "descripcion": "Ejercicios y actividades de apoyo clínico"
+            },
+            {
+                "categoria": "seguridad_salud",
+                "ruta": "\\seguridad_salud",
+                "archivo": "seguridad_salud.csv",
+                "descripcion": "Prevención de riesgos y objetos médicos"
+            },
+            {
+                "categoria": "social",
+                "ruta": "\\social",
+                "archivo": "social.csv",
+                "descripcion": "Interacción con otros y normas de cortesía"
+            },
+            {
+                "categoria": "tareas_escolares",
+                "ruta": "\\tareas_escolares",
+                "archivo": "tareas_escolares.csv",
+                "descripcion": "Materiales y actividades de estudio"
+            },
+            {
+                "categoria": "tareas_hogar",
+                "ruta": "\\tareas_hogar",
+                "archivo": "tareas_hogar.csv",
+                "descripcion": "Colaboración en la limpieza de la casa"
+            },
+            {
+                "categoria": "tecnologia",
+                "ruta": "\\tecnologia",
+                "archivo": "tecnologia.csv",
+                "descripcion": "Dispositivos electrónicos y computación"
+            },
+            {
+                "categoria": "transporte",
+                "ruta": "\\transporte",
+                "archivo": "transporte.csv",
+                "descripcion": "Vehículos terrestres, aéreos y marinos"
+            },
+            {
+                "categoria": "vestirse",
+                "ruta": "\\vestirse",
+                "archivo": "vestirse.csv",
+                "descripcion": "Prendas de ropa y calzado"
+            }
+        ]
+    },
+    "ajustes_ollama": {
+        "modelo": "llama3",
+        "temperatura": 0.1,
+        "formato_esperado": "json",
+        "instruccion_base": "Extraer palabra y categoria basada en los archivos CSV listados"
+    }
+}

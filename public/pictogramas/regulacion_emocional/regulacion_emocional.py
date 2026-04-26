@@ -1,0 +1,155 @@
+import os
+
+def renombrar_imagenes():
+
+    #  RUTA DE TU CARPETA
+    ruta = r"D:\laragon\www\TEA web\tea-laravel\public\pictogramas\regulacion_emocional"
+
+    # DICCIONARIO (TU MAPEO DE ANIMALES)
+    #148 fotoss
+    mapeo = {
+    # Numero : Nombre
+    "2714": "contar_hasta_tres",
+    "3241": "pelota_playa",
+    "3299": "sentarse_sofa",
+    "4550": "abrazo",
+    "4633": "concierto",
+    "4955": "profesora",
+    "5912": "audifono",
+    "5936": "susurrar",
+    "5973": "pensar",
+    "6071": "silencio",
+    "6157": "musica",
+    "6461": "hablar",
+    "6960": "dormir",
+    "7796": "maestro",
+    "8065": "cartel_concierto",
+    "8106": "espectaculo_musica",
+    "8175": "cantante",
+    "8660": "pelota_beisbol",
+    "8990": "director_orquesta",
+    "9098": "yoga",
+    "11225": "zapatear",
+    "11226": "sentarse_silla",
+    "11584": "escenario_musical",
+    "11586": "cantante_femenina",
+    "11588": "banda_musica",
+    "12326": "templete_musica",
+    "14532": "musico",
+    "15349": "escuchar_musica",
+    "16643": "sentarse_comodo",
+    "16992": "tienda_musica",
+    "22194": "pelota_ejercicio",
+    "25453": "soplar",
+    "26242": "organo",
+    "27218": "ping_pong",
+    "27264": "nadar",
+    "27265": "silbar",
+    "27917": "teatro_marionetas",
+    "27921": "marionetas",
+    "28549": "descansar_sofa",
+    "28657": "gritar",
+    "29720": "escuchar",
+    "29907": "pizarra_musica",
+    "29917": "aula_musica",
+    "31064": "sentarse_bien",
+    "31065": "sentarse_mal",
+    "31068": "persona_recta",
+    "31892": "jugar_pelota",
+    "31937": "descansar",
+    "32825": "meditar",
+    "34090": "bate_beisbol",
+    "34181": "diapason",
+    "34377": "respirar",
+    "34409": "expirar",
+    "34443": "dirigir_coro",
+    "34455": "coro_niños",
+    "34508": "olfatear",
+    "35741": "radio_cassette",
+    "35773": "boxeo_recreativo",
+    "35774": "boxeo_entrenamiento",
+    "35775": "boxeo_combate",
+    "37074": "pelota_vasca_1",
+    "37076": "pelota_vasca_2",
+    "37077": "pelota_vasca_3",
+    "37079": "pelota_vasca_4",
+    "37112": "pelota_tenis",
+    "37225": "clase_solfeo",
+    "37313": "examen_musica",
+    "37327": "tocar_flauta",
+    "37486": "auriculares",
+    "37656": "tocar_guitarra",
+    "37882": "metronomo",
+    "37888": "ejercitador_mano",
+    "37890": "rulo_espuma",
+    "37891": "pelota_fitball",
+    "37925": "lanzar_pelota",
+    "38214": "prohibido_ruido",
+    "38578": "hacer_gestos",
+    "38631": "juego_mesa",
+    "38761": "postura_loto",
+    "39078": "campanas_viento",
+    "39152": "carrillon",
+    "39224": "jugar_baloncesto",
+    "39235": "altavoz",
+    "39268": "coro_adultos",
+    "39399": "jugar_voley",
+    "39665": "actuacion_teatral",
+    "39682": "fronton_1",
+    "39683": "fronton_2",
+    "39785": "pelota_golf",
+    "39841": "hablar_bajo",
+    "39856": "dolor_cabeza",
+}
+    archivos = os.listdir(ruta)
+
+    renombrados = 0
+    ya_existen = 0
+    faltantes = []
+
+    for archivo in archivos:
+        if not archivo.lower().endswith(('.png', '.jpg', '.jpeg')):
+            continue
+
+        nombre_original, ext = os.path.splitext(archivo)
+
+        #  LIMPIEZA MÁGICA: Quitamos "arasaac_" si existe para quedarnos solo con el número
+        numero = nombre_original.replace("arasaac_", "").strip()
+
+        # Si después de limpiar no es un número, lo saltamos (por si hay otros archivos)
+        if not numero.isdigit():
+            continue
+
+        if numero in mapeo:
+            nuevo_nombre = mapeo[numero] + ext
+            origen = os.path.join(ruta, archivo)
+            destino = os.path.join(ruta, nuevo_nombre)
+
+            if os.path.exists(destino):
+                print(f" Ya existe: {nuevo_nombre}")
+                ya_existen += 1
+                continue
+
+            try:
+                os.rename(origen, destino)
+                print(f" {archivo} -> {nuevo_nombre}")
+                renombrados += 1
+            except Exception as e:
+                print(f" Error con {archivo}: {e}")
+        else:
+            faltantes.append(numero)
+
+    print("\n--- RESUMEN ---")
+    print(f" Renombrados: {renombrados}")
+    print(f" Ya existían: {ya_existen}")
+    print(f" Faltantes: {len(set(faltantes))}")
+
+    #  GENERA AUTOMÁTICAMENTE LOS QUE FALTAN
+    if faltantes:
+        print("\n--- COMPLETAR DICCIONARIO ---\n")
+        for f in sorted(set(faltantes)):
+            print(f'"{f}": "",')
+
+
+if __name__ == "__main__":
+    renombrar_imagenes()

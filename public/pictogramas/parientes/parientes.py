@@ -1,0 +1,272 @@
+import os
+
+def renombrar_imagenes():
+
+    #  RUTA DE TU CARPETA
+    ruta = r"D:\laragon\www\TEA web\tea-laravel\public\pictogramas\parientes"
+
+    # DICCIONARIO (TU MAPEO DE ANIMALES)
+    #148 fotoss
+    mapeo = {
+    # Numero : Nombre
+    "2243": "abuela",
+    "2244": "abuelo",
+    "2317": "casa",
+    "2340": "coche",
+    "2350": "cometa",
+    "2361": "cubo",
+    "2364": "libro",
+    "2386": "espaldera",
+    "2392": "niños",
+    "2408": "globo",
+    "2422": "padre_hijos",
+    "2423": "madre_hijos",
+    "2458": "madre_bebe",
+    "2482": "niña",
+    "2497": "padre_bebe",
+    "2498": "basura",
+    "2859": "parque_infantil",
+    "3065": "tienda",
+    "3116": "hospital",
+    "3139": "papa_noel",
+    "3150": "reno",
+    "3161": "trineo",
+    "3180": "caravana",
+    "3255": "banco",
+    "3273": "fuente",
+    "3389": "supermercado",
+    "4560": "hombre",
+    "4572": "balancín",
+    "4602": "cine",
+    "4608": "columpios",
+    "4652": "vaso_hielo",
+    "4754": "kiosko",
+    "5430": "tobogán",
+    "5590": "soñar",
+    "5926": "cuaderno",
+    "6063": "libro_abierto",
+    "6073": "carnet_biblioteca",
+    "6144": "mujer_mochila",
+    "6165": "hombre_mochila",
+    "6455": "esquiar",
+    "6469": "leer_cuento",
+    "6470": "libro_lectura",
+    "6471": "cuento_infantil",
+    "6523": "farmacia",
+    "6618": "carrito_compra",
+    "6876": "abuelos",
+    "6952": "calor",
+    "7257": "dormir_soñar",
+    "7770": "niñas_gemelas",
+    "9885": "familia_v1",
+    "9887": "familia_v2",
+    "10194": "mujer_mayor",
+    "10340": "niño_pequeño",
+    "10341": "niña_pequeña",
+    "11356": "picor",
+    "11728": "padre_hijo",
+    "11729": "madre_hija",
+    "11731": "madre_hijo",
+    "11733": "padre_hija",
+    "12303": "tortuga",
+    "21353": "firmar",
+    "22771": "bañarse",
+    "22777": "ducharse",
+    "23394": "leer",
+    "23400": "mirar",
+    "23709": "abuela_v2",
+    "23710": "mujer_v2",
+    "23717": "abuelo_v2",
+    "23718": "hombre_v2",
+    "23837": "estudiar",
+    "24234": "obispo",
+    "24515": "familia_numerosa_v1",
+    "24517": "familia_numerosa_v2",
+    "24519": "familia_numerosa_v3",
+    "24521": "familia_numerosa_v4",
+    "24679": "pensar",
+    "24680": "recordar",
+    "24793": "enseñar",
+    "24797": "clase_magistral",
+    "24947": "iglesia",
+    "25000": "parque",
+    "25297": "papa_noel_v2",
+    "25552": "reunion",
+    "25682": "leer_v2",
+    "25684": "leer_v3",
+    "25686": "leer_v4",
+    "26495": "tobogán_v2",
+    "26865": "frio_simbolo",
+    "27162": "hombre_v3",
+    "27163": "hombre_niño",
+    "27164": "hombre_v4",
+    "27166": "hombres_juntos",
+    "27169": "mujer_niña",
+    "27170": "mujer_v3",
+    "27171": "mujer_v4",
+    "27172": "hombre_mujer",
+    "30213": "panadería",
+    "30245": "familia_v3",
+    "30260": "familia_numerosa_v6",
+    "30261": "familia_numerosa_v7",
+    "30262": "familia_numerosa_v8",
+    "30263": "familia_numerosa_v9",
+    "30264": "familia_numerosa_v10",
+    "30265": "familia_numerosa_v11",
+    "30266": "familia_numerosa_v12",
+    "30267": "familia_numerosa_v13",
+    "30268": "familia_numerosa_v14",
+    "30269": "familia_numerosa_v15",
+    "30270": "familia_numerosa_v16",
+    "30271": "familia_numerosa_v17",
+    "30272": "familia_numerosa_v18",
+    "30273": "familia_numerosa_v19",
+    "30274": "familia_numerosa_v20",
+    "30275": "familia_numerosa_v21",
+    "30276": "familia_numerosa_v22",
+    "30277": "familia_numerosa_v23",
+    "30278": "familia_numerosa_v24",
+    "30279": "familia_numerosa_v25",
+    "30280": "familia_numerosa_v26",
+    "30281": "familia_numerosa_v27",
+    "30282": "familia_numerosa_v28",
+    "30283": "familia_numerosa_v29",
+    "30284": "familia_numerosa_v30",
+    "30285": "familia_numerosa_v31",
+    "30286": "familia_numerosa_v32",
+    "30287": "familia_numerosa_v33",
+    "30288": "familia_numerosa_v34",
+    "30289": "familia_numerosa_v35",
+    "30290": "familia_numerosa_v36",
+    "30291": "familia_numerosa_v37",
+    "30292": "familia_numerosa_v38",
+    "30293": "familia_numerosa_v39",
+    "31146": "padre_bebe_v2",
+    "31148": "madre_niño_v2",
+    "31466": "familia_v4",
+    "31467": "familia_v5",
+    "32714": "familia_hospital",
+    "32732": "autobús",
+    "32767": "salón",
+    "32798": "casita",
+    "33962": "libros_estantería",
+    "34510": "familia_v6",
+    "34511": "familia_v7",
+    "34814": "dar_dinero",
+    "35201": "familia_v8",
+    "35557": "tiritar",
+    "35561": "calor_v2",
+    "35569": "mareo",
+    "35583": "frio_v2",
+    "35589": "nieve_frio",
+    "35597": "calor_simbolo",
+    "35721": "calor_v3",
+    "36207": "ambulancia",
+    "36209": "centro_salud",
+    "36406": "templete",
+    "36407": "calor_lampara",
+    "36920": "familia_v9",
+    "36927": "familia_v10",
+    "36977": "familia_v11",
+    "37014": "columpios_v2",
+    "37015": "ordenador",
+    "37346": "padre_hijo_v2",
+    "37352": "madre_hija_v2",
+    "37353": "madre_niño_v3",
+    "37354": "padre_hija_v2",
+    "37682": "dormir_monitorizado",
+    "37957": "bolsa_frio",
+    "37966": "madre_hijos_v2",
+    "37967": "padre_hijos_v2",
+    "38023": "columpios_v3",
+    "38025": "columpio_v4",
+    "38082": "hospital_v2",
+    "38083": "clínica",
+    "38085": "parque_v2",
+    "38152": "ordenador_v2",
+    "38154": "ley",
+    "38155": "justicia",
+    "38156": "matematicas",
+    "38157": "fisica",
+    "38158": "astronomia",
+    "38159": "biologia",
+    "38160": "botanica",
+    "38169": "arco",
+    "38170": "arquitectura",
+    "38172": "fotografía",
+    "38186": "clase",
+    "38187": "aula",
+    "38256": "papelera_calle",
+    "38351": "grupo_personas",
+    "38366": "prohibido_personas",
+    "38554": "tiovivo",
+    "38600": "familia_v12",
+    "38601": "familia_v13",
+    "38809": "familia_circulo",
+    "39008": "pareja_novios",
+    "39097": "arbol_genealogico",
+    "39203": "pueblo",
+    "39207": "cine_v2",
+    "39265": "casita_pajaro",
+    "39392": "dentista",
+    "39470": "rodaje",
+    "39475": "mostrador_comida",
+    "39544": "torno_entrada",
+    "39565": "sube_y_baja",
+    "39566": "columpio_adaptado",
+    "39568": "camilla",
+    "39571": "muelle_parque",
+    "39610": "familia_v14"
+}
+    archivos = os.listdir(ruta)
+
+    renombrados = 0
+    ya_existen = 0
+    faltantes = []
+
+    for archivo in archivos:
+        if not archivo.lower().endswith(('.png', '.jpg', '.jpeg')):
+            continue
+
+        nombre_original, ext = os.path.splitext(archivo)
+
+        #  LIMPIEZA MÁGICA: Quitamos "arasaac_" si existe para quedarnos solo con el número
+        numero = nombre_original.replace("arasaac_", "").strip()
+
+        # Si después de limpiar no es un número, lo saltamos (por si hay otros archivos)
+        if not numero.isdigit():
+            continue
+
+        if numero in mapeo:
+            nuevo_nombre = mapeo[numero] + ext
+            origen = os.path.join(ruta, archivo)
+            destino = os.path.join(ruta, nuevo_nombre)
+
+            if os.path.exists(destino):
+                print(f" Ya existe: {nuevo_nombre}")
+                ya_existen += 1
+                continue
+
+            try:
+                os.rename(origen, destino)
+                print(f" {archivo} -> {nuevo_nombre}")
+                renombrados += 1
+            except Exception as e:
+                print(f" Error con {archivo}: {e}")
+        else:
+            faltantes.append(numero)
+
+    print("\n--- RESUMEN ---")
+    print(f" Renombrados: {renombrados}")
+    print(f" Ya existían: {ya_existen}")
+    print(f" Faltantes: {len(set(faltantes))}")
+
+    #  GENERA AUTOMÁTICAMENTE LOS QUE FALTAN
+    if faltantes:
+        print("\n--- COMPLETAR DICCIONARIO ---\n")
+        for f in sorted(set(faltantes)):
+            print(f'"{f}": "",')
+
+
+if __name__ == "__main__":
+    renombrar_imagenes()
