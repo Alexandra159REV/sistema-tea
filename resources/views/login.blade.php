@@ -25,9 +25,9 @@
 
         .glass-card {
             background: white;
-            max-width: 420px;
+            max-width: 440px;
             width: 90%;
-            padding: 3rem;
+            padding: 2.5rem;
             border-radius: 2rem; 
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
             border: 1px solid rgba(226, 232, 240, 0.7);
@@ -77,21 +77,27 @@
             filter: brightness(1.1);
         }
 
-        .alert-error {
-            background-color: #fff5f5;
-            color: #c53030;
-            border: 1px solid #feb2b2;
-            border-radius: 1rem;
-            padding: 0.75rem;
-            font-size: 0.85rem;
-            text-align: center;
+        /* Estilos para las pestañas (Tabs) */
+        .tab-btn {
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
         }
     </style>
 </head>
 <body>
 
 <div class="glass-card">
-    <div class="text-center mb-8">
+    <div class="text-center mb-6">
         <div class="inline-flex items-center justify-center w-20 h-20 bg-blue-50 rounded-3xl mb-4">
             <span style="font-size: 40px;">🧠</span>
         </div>
@@ -101,14 +107,26 @@
         <p class="text-slate-400 font-medium mt-1">Plataforma de Seguimiento</p>
     </div>
 
-    {{-- En Laravel, la ruta suele ser route('login') --}}
+    <div class="flex justify-center border-b border-slate-100 mb-6">
+        <button type="button" id="tab-padre" class="tab-btn active w-1/2 text-center" onclick="setRole('padre')">
+            <i class="fa-solid fa-user-group mr-2"></i>Padre / Tutor
+        </button>
+        <button type="button" id="tab-doctor" class="tab-btn w-1/2 text-center" onclick="setRole('doctor')">
+            <i class="fa-solid fa-user-md mr-2"></i>Especialista
+        </button>
+    </div>
+
     <form action="{{ route('login') }}" method="POST" class="space-y-5">
-        @csrf {{-- Token de seguridad obligatorio --}}
+        @csrf
+
+        <input type="hidden" id="rol-input" name="rol" value="{{ old('rol', 'padre') }}">
 
         <div>
-            <label for="email"><i class="fa-solid fa-envelope me-2"></i>Correo Electrónico</label>
-            <input type="email" id="email" name="email" value="{{ old('email') }}" class="input-modern" placeholder="ejemplo@correo.com" required autofocus>
-            @error('email')
+            <label id="label-identity" for="identity">
+                <i class="fa-solid fa-envelope me-2"></i>Correo del Padre
+            </label>
+            <input type="email" id="identity" name="identity" value="{{ old('identity') }}" class="input-modern" placeholder="ejemplo@correo.com" required autofocus>
+            @error('identity')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
             @enderror
         </div>
@@ -121,24 +139,60 @@
             @enderror
         </div>
         
-        {{-- Manejo de errores globales o de sesión --}}
-        @if (session('status'))
-            <div class="alert-error">
-                {{ session('status') }}
+        {{-- Errores globales de credenciales incorrectas --}}
+        @if ($errors->any() && !$errors->has('identity') && !$errors->has('password'))
+            <div class="bg-red-50 text-red-600 border border-red-200 rounded-xl p-3 text-sm text-center font-semibold">
+                {{ $errors->first() }}
             </div>
         @endif
 
-        <button type="submit" class="btn-modern w-full mt-4">
+        <button type="submit" class="btn-modern w-full mt-2">
             Entrar al Panel
         </button>
     </form>
     
-    <div class="text-center mt-8">
+    <div class="text-center mt-6">
         <a href="{{ url('/') }}" class="text-slate-400 hover:text-blue-500 font-bold text-sm transition-colors">
             <i class="fa-solid fa-arrow-left me-1"></i> Volver a la página principal
         </a>
     </div>
 </div>
+
+<script>
+    function setRole(role) {
+        // Campos de la vista
+        const roleInput = document.getElementById('rol-input');
+        const labelIdentity = document.getElementById('label-identity');
+        const inputIdentity = document.getElementById('identity');
+        const tabPadre = document.getElementById('tab-padre');
+        const tabDoctor = document.getElementById('tab-doctor');
+
+        // Guardamos el rol seleccionado para pasárselo a Laravel
+        roleInput.value = role;
+
+        if (role === 'padre') {
+            // Activar visualmente pestaña Padre
+            tabPadre.classList.add('active');
+            tabDoctor.classList.remove('active');
+            // Cambiar textos correspondientes
+            labelIdentity.innerHTML = '<i class="fa-solid fa-envelope me-2"></i>Correo del Padre / Tutor';
+            inputIdentity.placeholder = 'padre@correo.com';
+        } else {
+            // Activar visualmente pestaña Especialista
+            tabDoctor.classList.add('active');
+            tabPadre.classList.remove('active');
+            // Cambiar textos correspondientes
+            labelIdentity.innerHTML = '<i class="fa-solid fa-user-md me-2"></i>Correo del Especialista';
+            inputIdentity.placeholder = 'doctor@neurocentro.com';
+        }
+    }
+
+    // Mantener la pestaña correcta activa si Laravel devuelve un error de validación
+    document.addEventListener("DOMContentLoaded", function() {
+        const currentRole = document.getElementById('rol-input').value;
+        setRole(currentRole);
+    });
+</script>
 
 </body>
 </html>

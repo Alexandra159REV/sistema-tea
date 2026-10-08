@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ isset($paciente) ? 'Editar' : 'Paso 2' }}: Perfil Sensorial - NeuroCentro</title>
+    <title>{{ (isset($paciente) && $paciente->exists) ? 'Editar' : 'Paso 2' }}: Perfil Sensorial - NeuroCentro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -40,28 +40,26 @@
     
     <div class="text-center mb-10">
         <h1 class="text-4xl font-black text-slate-900">
-            {{ isset($paciente) ? 'Editar Perfil de ' . $paciente->nombre : 'Configuración Sensorial' }}
+            {{ (isset($paciente) && $paciente->exists) ? 'Editar Perfil de ' . $paciente->nombre : 'Configuración Sensorial' }}
         </h1>
         <div class="text-cyan-600 font-bold mt-2 uppercase tracking-widest text-sm">
-            {{ isset($paciente) ? 'Actualización de preferencias' : 'Paso 2: Preferencias y Entorno' }}
+            {{ (isset($paciente) && $paciente->exists) ? 'Actualización de preferencias' : 'Paso 2: Preferencias y Entorno' }}
         </div>
     </div>
 
-    <form action="{{ isset($paciente) ? route('update', $paciente->id) : route('store') }}" 
+    @php
+        $esEdicion = (isset($paciente) && $paciente->exists && Route::currentRouteName() == 'edit');
+        $rutaFormulario = $esEdicion ? route('update', $paciente->id) : route('agenda.store', $paciente->id);
+    @endphp
+
+    <form action="{{ $rutaFormulario }}" 
           method="POST" 
           class="glass-card p-8 space-y-8">
         
         @csrf 
-        @if(isset($paciente))
+        @if($esEdicion)
             @method('PUT')
         @endif
-
-        {{-- Campos ocultos del Paso 1 para no perder la información --}}
-        <input type="hidden" name="nombre" value="{{ $paciente->nombre ?? request('nombre') }}">
-        <input type="hidden" name="edad" value="{{ $paciente->edad ?? request('edad') }}">
-        <input type="hidden" name="nivel_tea" value="{{ $paciente->nivel_tea ?? request('nivel_tea') }}">
-        <input type="hidden" name="comunicacion_verbal" value="{{ $paciente->comunicacion_verbal ?? request('comunicacion_verbal') }}">
-        <input type="hidden" name="interaccion_social" value="{{ $paciente->interaccion_social ?? request('interaccion_social') }}">
 
         <h2 class="section-title">2. Ajustes Sensoriales</h2>
 
@@ -128,7 +126,7 @@
         <div class="pt-6 border-t mt-10">
             <button type="submit" class="btn-finish">
                 <i class="fas fa-check-circle me-2"></i> 
-                {{ isset($paciente) ? 'GUARDAR CAMBIOS' : 'FINALIZAR Y GUARDAR PERFIL' }}
+                {{ $esEdicion ? 'GUARDAR CAMBIOS' : 'FINALIZAR Y GUARDAR PERFIL' }}
             </button>
         </div>
     </form>
@@ -143,19 +141,16 @@
     const textoInstrucciones = document.getElementById('instrucciones-texto');
 
     function actualizarVistaPrevia() {
-        // 1. Brillo y Contraste (Escala 0.0 a 2.0)
         const b = brilloInput.value / 50; 
         const c = contrasteInput.value / 50; 
         ranaImg.style.filter = `brightness(${b}) contrast(${c})`;
 
-        // 2. Color de fondo
         const colorSeleccionado = colorInput.value;
         ranaContainer.style.backgroundColor = colorSeleccionado;
 
-        // 3. Contraste del texto automático
         const rgb = hexToRgb(colorSeleccionado);
         if(rgb) {
-            const luma = 0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b; // Fórmula de luminancia
+            const luma = 0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b; 
             textoInstrucciones.style.color = luma < 128 ? 'white' : '#64748b';
         }
     }
@@ -173,7 +168,6 @@
     contrasteInput.addEventListener('input', actualizarVistaPrevia);
     colorInput.addEventListener('input', actualizarVistaPrevia);
 
-    // Ejecución inicial
     actualizarVistaPrevia();
 </script>
 </body>

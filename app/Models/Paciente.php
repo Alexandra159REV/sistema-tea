@@ -7,28 +7,40 @@ use Illuminate\Database\Eloquent\Model;
 class Paciente extends Model
 {
     /**
-     * Los atributos que se pueden asignar masivamente (Mass Assignment).
-     * Se han incluido los campos de ajustes sensoriales y la agenda completa.
+     * Tabla
+     */
+    protected $table = 'pacientes';
+
+    /**
+     * Campos permitidos
      */
     protected $fillable = [
-        'nombre', 
-        'edad', 
-        'nivel_tea', 
-        'comunicacion_verbal', 
-        'interaccion_social',
-        
-        // Ajustes Sensoriales (Basados en la Prueba de la Rana)
-        'brillo_pref', 
-        'contraste_pref', 
-        'color_fondo', 
-        'color_molesta',
-        
-        // Resultados de la IA
-        'sugerencias_pictogramas',
 
-        // Agenda Semanal Completa
-        'agenda_lunes', 
-        'agenda_martes', 
+        // DATOS BÁSICOS
+        'nombre',
+        'edad',
+        'nivel_tea',
+
+        // COMUNICACIÓN
+        'comunicacion_verbal',
+        'p_comunicacion',
+
+        // SOCIAL
+        'interaccion_social',
+
+        // SENSORIAL
+        'brillo_pref',
+        'contraste_pref',
+        'color_fondo',
+        'color_molesta',
+
+        // IA
+        'sugerencias_pictogramas',
+        'imagen_personalizada',
+
+        // AGENDAS
+        'agenda_lunes',
+        'agenda_martes',
         'agenda_miercoles',
         'agenda_jueves',
         'agenda_viernes',
@@ -37,22 +49,43 @@ class Paciente extends Model
     ];
 
     /**
-     * Relación: Un paciente puede tener muchos usuarios (padres, médicos).
-     * Conecta con la columna 'paciente_id' en la tabla de usuarios en HeidiSQL.
+     * Conversión automática
      */
-    public function usuarios() 
+    protected $casts = [
+
+        // Convierte JSON → Array automáticamente
+        'imagen_personalizada' => 'array',
+    ];
+
+    /**
+     * Relación usuarios
+     */
+    public function usuarios()
     {
-        return $this->hasMany(User::class, 'paciente_id');
+        return $this->hasMany(
+            User::class,
+            'paciente_id'
+        );
     }
 
     /**
-     * Retorna la agenda del día actual para mostrarla en el perfil.
-     * Esto soluciona el error BadMethodCallException en la vista.
+     * Relación seguimientos
+     */
+    public function seguimientos()
+    {
+        return $this->hasMany(
+            Seguimiento::class,
+            'paciente_id'
+        );
+    }
+
+    /**
+     * Agenda actual
      */
     public function pictogramasActuales()
     {
-        // Obtenemos el nombre del día en español (o inglés según tu config)
         $dias = [
+
             'Monday'    => 'agenda_lunes',
             'Tuesday'   => 'agenda_martes',
             'Wednesday' => 'agenda_miercoles',
@@ -62,11 +95,12 @@ class Paciente extends Model
             'Sunday'    => 'agenda_domingo',
         ];
 
-        $diaActual = date('l'); // Ej: "Monday"
-        $campo = $dias[$diaActual] ?? 'agenda_lunes';
+        $diaActual = date('l');
 
-        // Retornamos el contenido del campo de la agenda para hoy
-        // Esto permite que el bucle en tu Blade (línea 251) tenga datos que procesar
+        $campo = $dias[$diaActual]
+            ?? 'agenda_lunes';
+
         return $this->$campo;
     }
 }
+

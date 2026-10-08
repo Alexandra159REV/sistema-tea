@@ -4,246 +4,869 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil Familiar - {{ $paciente->nombre }}</title>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        :root {
-            --neuro-cyan: #33c3e1;
-            --neuro-cyan-dark: #00acc1;
-            --bg-light: #f0faff;
-            --sidebar-color: #16222e;
-        }
-        
-        body {
-            background-color: var(--bg-light);
-            background-image: linear-gradient(rgba(240, 250, 255, 0.95), rgba(240, 250, 255, 0.95)),
-                              url('https://www.transparenttextures.com/patterns/cubes.png');
-            font-family: 'Inter', sans-serif;
+        :root{
+            --neuro-cyan:#33c3e1;
+            --neuro-cyan-dark:#00acc1;
+            --bg-light:#f0faff;
+            --sidebar-color:#16222e;
         }
 
-        .hero-bg {
-            background: var(--sidebar-color);
-            height: 180px;
-            border-bottom: 5px solid var(--neuro-cyan);
+        body{
+            background-color:var(--bg-light);
+            background-image:
+                linear-gradient(rgba(240,250,255,.95), rgba(240,250,255,.95)),
+                url('https://www.transparenttextures.com/patterns/cubes.png');
+
+            font-family:'Inter',sans-serif;
         }
 
-        .profile-card-offset { margin-top: -90px; }
-
-        .neuro-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            border: 1px solid rgba(51, 195, 225, 0.1);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+        .hero-bg{
+            background:var(--sidebar-color);
+            height:180px;
+            border-bottom:5px solid var(--neuro-cyan);
         }
 
-        .avatar-main {
-            width: 150px; height: 150px;
-            background: white;
-            border-radius: 25px;
-            border: 6px solid white;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 3.5rem; font-weight: 800; color: var(--neuro-cyan);
+        .profile-card-offset{
+            margin-top:-90px;
         }
 
-        .slot-grid {
-            transition: all 0.3s ease;
-        }
-        
-        .slot-grid:hover {
-            border-color: var(--neuro-cyan) !important;
-            transform: translateY(-2px);
+        .neuro-card{
+            background:rgba(255,255,255,.95);
+            backdrop-filter:blur(10px);
+
+            border-radius:30px;
+            border:1px solid rgba(51,195,225,.1);
+
+            box-shadow:0 15px 35px rgba(0,0,0,.05);
+
+            margin-bottom:2rem;
         }
 
-        @media print {
-            .no-print { display: none; }
-            body { background: white !important; }
-            .neuro-card { box-shadow: none; border: 1px solid #eee; }
+        @media print{
+            .no-print{
+                display:none !important;
+            }
+
+            body{
+                background:white !important;
+            }
+
+            .neuro-card{
+                box-shadow:none;
+                border:1px solid #eee;
+                break-inside:avoid;
+            }
         }
     </style>
 </head>
-<body class="min-h-screen">
 
-    <div class="hero-bg w-full flex items-center px-12 no-print">
+<body class="min-h-screen"
+      x-data="{ openModal:false }">
+
+{{-- ================= HERO ================= --}}
+<div class="hero-bg w-full flex items-center justify-between px-12 no-print">
+
+    <div class="flex items-center gap-4">
+
         <div class="opacity-20">
             <i class="fas fa-puzzle-piece text-white text-5xl"></i>
         </div>
+
+        <div>
+            <h1 class="text-white font-extrabold text-2xl tracking-wide">
+                Panel de Seguimiento
+            </h1>
+
+            <p class="text-slate-400 text-xs">
+                Gestión longitudinal y herramientas visuales
+            </p>
+        </div>
+
     </div>
 
-    <div class="max-w-6xl mx-auto px-4 pb-12">
-        <div class="profile-card-offset text-center mb-10">
-            <div class="relative inline-block mb-4">
-                <div class="avatar-main mx-auto">
-                    {{ strtoupper(substr($paciente->nombre, 0, 2)) }}
-                </div>
-                <div class="absolute bottom-4 right-0 bg-green-500 w-7 h-7 rounded-full border-4 border-white shadow-sm"></div>
-            </div>
-            <h1 class="text-4xl font-extrabold text-slate-800 tracking-tight">{{ $paciente->nombre }}</h1>
-            <p class="text-cyan-600 font-semibold mt-2">Programa de Neurodesarrollo Personalizado • {{ $paciente->edad }} años</p>
+    <div class="flex items-center gap-3">
 
-            <div class="flex justify-center gap-4 mt-8 no-print">
-                <a href="{{ route('index') }}" class="px-7 py-3 rounded-2xl font-bold flex items-center border-2 border-slate-200 text-slate-500 hover:border-cyan-500 hover:text-cyan-500 transition-all">
-                    <i class="fas fa-chevron-left me-2"></i> Volver a Gestión
-                </a>
-                <button onclick="window.print()" class="bg-[#33c3e1] text-white px-8 py-3 rounded-2xl font-bold flex items-center shadow-lg hover:bg-cyan-500 transition-all">
-                    <i class="fas fa-print me-2"></i> Imprimir Reporte
-                </button>
+        <button
+            @click="openModal = true"
+            class="bg-cyan-500 hover:bg-cyan-600 text-white font-black text-xs px-10 py-5 rounded-xl shadow-lg transition-all">
+
+            <i class="fas fa-plus-circle"></i>
+            Registrar Sesión
+        </button>
+
+        <button
+            onclick="window.print()"
+            class="bg-slate-800 hover:bg-slate-700 text-white text-xs px-10 py-5 rounded-xl">
+
+            <i class="fas fa-print"></i>
+            Imprimir
+        </button>
+
+        <a href="{{ route('dashboard') }}"
+           class="bg-slate-800 hover:bg-slate-700 text-white text-xs px-10 py-5 rounded-xl">
+
+            <i class="fas fa-arrow-left"></i>
+            Volver
+        </a>
+
+    </div>
+
+</div>
+
+<div class="max-w-6xl mx-auto px-4 pb-12">
+
+    {{-- ALERTAS --}}
+    @if(session('success'))
+        <div class="mt-4 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded-xl">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    {{-- ================= PERFIL ================= --}}
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-8 profile-card-offset">
+
+        {{-- FOTO --}}
+        <div class="lg:col-span-1">
+
+            <div class="neuro-card p-7 h-full flex flex-col items-center justify-center">
+
+                <h3 class="text-slate-400 text-xs font-black uppercase tracking-widest mb-6">
+                    Identificador Personal
+                </h3>
+
+                <div
+                    class="bg-white p-5 rounded-[30px] shadow-inner border-2 border-dashed border-cyan-100 flex items-center justify-center"
+                    style="background-color: {{ $paciente->color_fondo ?? '#ffffff' }};
+                           width:160px;
+                           height:160px;">
+
+                    @if(isset($paciente->imagen_personalizada) && $paciente->imagen_personalizada)
+
+                        <img
+                            src="{{ asset($paciente->imagen_personalizada) }}"
+                            class="w-32 h-32 object-contain">
+
+                    @else
+
+                        <i class="fas fa-child text-slate-200 text-6xl"></i>
+
+                    @endif
+
+                </div>
+
+                <div class="mt-5 text-center">
+
+                    <h2 class="font-black text-xl text-slate-800">
+                        {{ $paciente->nombre }}
+                    </h2>
+
+                    <p class="text-slate-400 text-sm">
+                        {{ $paciente->edad }} años
+                    </p>
+
+                </div>
+
             </div>
+
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <div class="lg:col-span-1">
-                <div class="neuro-card p-7 h-full">
-                    <div class="flex items-center justify-between mb-6 border-b pb-2">
-                        <h3 class="text-slate-400 text-xs font-black uppercase tracking-[0.2em]">Apoyo Visual Sensorial</h3>
-                        <i class="fas fa-robot text-cyan-200"></i>
-                    </div>
-                    
-                    <div class="bg-white p-5 rounded-[30px] text-center shadow-inner border-2 border-dashed border-cyan-100">
-                        @if($paciente->imagen_personalizada)
-                            <div class="rounded-2xl p-4 mx-auto mb-3 flex items-center justify-center"
-                                 style="background-color: {{ $paciente->color_fondo ?? '#f8fafc' }}; width: 180px; height: 180px;">
-                                <img src="{{ asset($paciente->imagen_personalizada) }}"
-                                     alt="Pictograma IA"
-                                     class="w-full h-full object-contain mix-blend-multiply">
-                            </div>
-                            <p class="text-[11px] text-slate-500 italic">Identificador único generado por IA</p>
-                        @else
-                            <div class="w-[180px] h-[180px] bg-slate-100 rounded-2xl mx-auto mb-3 flex items-center justify-center">
-                                <i class="fas fa-spinner fa-spin text-cyan-300 text-4xl"></i>
-                            </div>
-                            <p class="text-[11px] text-slate-400">Procesando imagen sensorial...</p>
-                        @endif
-                    </div>
+        {{-- RADAR --}}
+        <div class="lg:col-span-2">
+
+            <div class="neuro-card p-3 h-full">
+
+                <h3 class="text-slate-900 font-extrabold text-xl mb-4">
+                    Progreso de Capacidades
+                </h3>
+
+                <div style="height:350px;">
+                    <canvas id="radarProgreso"></canvas>
                 </div>
+
             </div>
 
-            <div class="lg:col-span-2">
-                <div class="neuro-card p-8 h-full flex flex-col">
-                    <div class="mb-6">
-                        <h2 class="text-2xl font-extrabold text-slate-800">Diario del Niño (Analizador IA)</h2>
-                        <p class="text-slate-400 text-sm">Describe la actividad para buscar el pictograma adecuado</p>
-                    </div>
-
-                    <form action="{{ route('ia.analizar', $paciente->id) }}" method="POST" class="flex-grow flex flex-col no-print">
-                        @csrf
-                        <textarea name="comentario_padre" rows="5"
-                            class="w-full p-6 rounded-3xl border-2 border-slate-100 focus:border-cyan-400 focus:ring-0 text-slate-600 text-sm transition-all resize-none bg-slate-50/50"
-                            placeholder="Ejemplo: Necesito un pictograma para lavarse los dientes con pasta roja..."></textarea>
-                        
-                        <button type="submit" class="mt-4 bg-cyan-500 text-white px-8 py-4 rounded-2xl font-bold shadow-lg hover:bg-cyan-600 transition-all flex items-center justify-center">
-                            <i class="fas fa-search-plus me-2"></i> Analizar Actividad con IA
-                        </button>
-                    </form>
-                </div>
-            </div>
         </div>
 
-        <h2 class="text-3xl font-black text-slate-800 mb-8 flex items-center gap-3 px-4">
-            <i class="fas fa-calendar-check text-cyan-500"></i>
-            Planificación Semanal de Apoyos
-        </h2>
+        {{-- INDICADORES --}}
+        <div class="lg:col-span-1">
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            @php 
-                $diasConfig = [
-                    'lunes'     => ['color' => '#10b981', 'icon' => 'fa-sun'],
-                    'martes'    => ['color' => '#f59e0b', 'icon' => 'fa-bolt'],
-                    'miercoles' => ['color' => '#3b82f6', 'icon' => 'fa-water'],
-                    'jueves'    => ['color' => '#8b5cf6', 'icon' => 'fa-leaf'],
-                    'viernes'   => ['color' => '#ec4899', 'icon' => 'fa-star'],
-                    'sabado'    => ['color' => '#6366f1', 'icon' => 'fa-gamepad'],
-                    'domingo'   => ['color' => '#f43f5e', 'icon' => 'fa-heart'],
-                ];
+            <div class="neuro-card p-6 h-full">
 
-                // Lista completa basada en tu estructura de carpetas
-                $carpetasPictos = [
-                    'acciones', 'animales', 'aseo_personal', 'comida', 'deberes',
-                    'emociones', 'higiene', 'instrumentos_musicales', 'jardineria',
-                    'lugares', 'necesidades_basicas', 'ordenar_habitacion', 'parientes',
-                    'preparar_merienda', 'regulacion_emocional', 'rutinas_terapia',
-                    'seguridad_salud', 'social', 'tareas_escolares', 'tareas_hogar',
-                    'tecnologia', 'transporte', 'vestirse', 'prueba' 
-                ];
-            @endphp
-                
-            @foreach($diasConfig as $dia => $config)
-                <div class="neuro-card p-8 border-t-[10px] w-full flex flex-col" style="border-top-color: {{ $config['color'] }}">
-                    <div class="flex items-center gap-4 mb-5 border-b pb-3">
-                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg" style="background-color: {{ $config['color'] }}">
-                            <i class="fas {{ $config['icon'] }} text-xl"></i>
+                <div class="space-y-4">
+
+                    <div class="bg-white p-4 rounded-2xl border">
+
+                        <p class="font-black text-slate-800 text-sm">
+                            Autonomía
+                        </p>
+
+                        <p class="text-cyan-600 text-2xl font-black">
+                            {{ optional($ultimoSeguimiento)->autonomia ?? 0 }}%
+                        </p>
+
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border">
+
+                        <p class="font-black text-slate-800 text-sm">
+                            Comunicación
+                        </p>
+
+                        <p class="text-blue-500 text-2xl font-black">
+                            {{ optional($ultimoSeguimiento)->comunicacion ?? 0 }}%
+                        </p>
+
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border">
+
+                        <p class="font-black text-slate-800 text-sm">
+                            Estabilidad
+                        </p>
+
+                        <p class="text-indigo-500 text-2xl font-black">
+                            {{ optional($ultimoSeguimiento)->estabilidad ?? 0 }}%
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {{-- ================= GRAFICO ================= --}}
+
+    <div class="mt-12"> 
+        <h2 class="text-2xl font-black text-slate-800 mb-6">Grafico de progreso</h2>
+    </div>
+
+    <div class="h-64 mt-4">
+        <canvas id="lineaEvolucion"></canvas>
+    </div>
+
+    @isset($reporteProgreso, $mensajeAnalisis)
+        <div class="mt-8 p-6 bg-white border-l-4 border-green-800 rounded-2xl shadow-sm">  
+        <h4 class="font-black text-green-900 uppercase text-xs tracking-widest mb-2">
+            Análisis de Progreso
+        </h4>
+            <p class="text-sm text-slate-600 leading-relaxed italic">
+                {{ $mensajeAnalisis }}
+            </p>
+        </div>
+    @endisset
+
+
+
+
+    
+{{-- ================= INFORME DE EVOLUCIÓN TERAPÉUTICA ================= --}}
+<div class="mt-8 p-6 bg-white shadow-lg rounded-xl border border-slate-100">
+    <h2 class="text-2xl font-black text-slate-800 mb-6">Informe de Evolución Terapéutica</h2>
+    
+
+
+
+    {{-- Indicadores de Progreso --}}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="p-4 bg-blue-50 rounded-lg border border-blue-100">
+            <p class="font-bold text-blue-800">Autonomía</p>
+            <p class="text-3xl font-black text-blue-900">{{ $diferenciaAutonomia > 0 ? '+' : '' }}{{ $diferenciaAutonomia }}%</p>
+        </div>
+        
+        <div class="p-4 bg-green-50 rounded-lg border border-green-100">
+            <p class="font-bold text-green-800">Comunicación</p>
+            <p class="text-3xl font-black text-green-900">{{ $diferenciaComunicacion > 0 ? '+' : '' }}{{ $diferenciaComunicacion }}%</p>
+        </div>
+        
+        <div class="p-4 bg-purple-50 rounded-lg border border-purple-100">
+            <p class="font-bold text-purple-800">Estabilidad</p>
+            <p class="text-3xl font-black text-purple-900">{{ $diferenciaEstabilidad > 0 ? '+' : '' }}{{ $diferenciaEstabilidad }}%</p>
+        </div>
+    </div>
+
+    {{-- Interpretación del Especialista --}}
+    <div class="space-y-4">
+        <h3 class="font-bold text-lg text-slate-800">Interpretación del Especialista:</h3>
+        <div class="text-slate-700 bg-slate-50 p-4 rounded-lg space-y-2">
+            <p><strong>Autonomía:</strong> {{ $textoAutonomia }}</p>
+            <p><strong>Comunicación:</strong> {{ $textoComunicacion }}</p>
+            <p><strong>Estabilidad:</strong> {{ $textoEstabilidad }}</p>
+        </div>
+    </div>
+
+    {{-- Sugerencia del Sistema --}}
+    @php
+        $resultados = [
+            'Autonomía' => $diferenciaAutonomia,
+            'Comunicación' => $diferenciaComunicacion,
+            'Estabilidad' => $diferenciaEstabilidad
+        ];
+        $minimo = min($resultados);
+        $areaCritica = array_search($minimo, $resultados);
+    @endphp
+
+    <div class="mt-6 p-4 border-l-4 border-amber-500 bg-amber-50 rounded-r-lg">
+        <p class="text-amber-900">
+            <strong>Sugerencia clínica:</strong> 
+            Considerando el progreso actual, el área que requiere mayor atención esta semana es <strong>{{ $areaCritica }}</strong>. 
+            Se recomienda ajustar los objetivos terapéuticos para potenciar este aspecto.
+        </p>
+    </div>
+</div>
+
+<div class="mt-12"> 
+    <h2 class="text-2xl font-black text-slate-800 mb-6"></h2>
+</div>
+
+
+    {{-- ================= AGENDA ================= --}}
+    <h2 class="text-2xl font-black text-slate-800 mb-6">
+        Planificación Semanal
+    </h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+        @php
+            $diasConfig = [
+                'lunes' => '#10b981',
+                'martes' => '#f59e0b',
+                'miercoles' => '#3b82f6',
+                'jueves' => '#8b5cf6',
+                'viernes' => '#ec4899',
+                'sabado' => '#6366f1',
+                'domingo' => '#f43f5e',
+            ];
+        @endphp 
+
+           
+            @foreach($diasConfig as $dia => $color)
+
+            <div class="neuro-card p-6 border-t-[8px]"
+                style="border-top-color: {{ $color }}">
+
+                <h3 class="font-black uppercase text-lg mb-4">
+                    {{ $dia }}
+                </h3>
+
+                @php
+
+                    // =====================================================
+                    // TEXTO DEL DÍA
+                    // =====================================================
+
+                    $textoAgenda = $paciente->{"agenda_$dia"} ?? '';
+
+                    // =====================================================
+                    // DIVIDIR ACTIVIDADES
+                    // =====================================================
+
+                    $actividades = preg_split(
+                        '/(?=\d+\.)/',
+                        $textoAgenda,
+                        -1,
+                        PREG_SPLIT_NO_EMPTY
+                    );
+
+                    // =====================================================
+                    // STOPWORDS
+                    // =====================================================
+
+                    $stopWords = [
+                        'de','la','el','los','las',
+                        'y','en','con','para',
+                        'una','un','sus','del',
+                        'al','se','que','por',
+                        'antes','despues','durante',
+                        'sobre','desde','hasta',
+                        'realiza','realizando',
+                        'dedica','actividad',
+                        'actividades',
+                        'donde',
+                        'mientras',
+                        'otros',
+                        'procede',
+                        'luego',
+                        'después',
+                        'finalmente',
+                        'ademas',
+                        'tambien',
+                        'parte',
+                        'momento',
+                        'tiempo',
+                        'cosas',
+                        'algo',
+                        'todo',
+                        'toda',
+                        'este',
+                        'esta',
+                        'estas',
+                        'estos',
+                        'muy',
+                        'más',
+                        'menos',
+                        'tener',
+                        'hacer',
+                        'cada',
+                        'entre',
+                        'sobre',
+                        'tras',
+                        'día',
+                        'tarde',
+                        'noche'
+                    ];
+
+                    // =====================================================
+                    // SINÓNIMOS
+                    // =====================================================
+
+                    $sinonimos = [
+                        'estudiantes' => 'estudiante',
+                        'alumnos' => 'estudiante',
+                        'profesores' => 'profesor',
+                        'maestros' => 'profesor',
+                        'niños' => 'niño',
+                        'niñas' => 'niña',
+                        'lavando' => 'lavar',
+                        'comiendo' => 'comer',
+                        'corriendo' => 'correr',
+                        'jugando' => 'jugar',
+                        'caminando' => 'caminar',
+                        'durmiendo' => 'dormir',
+                        'escribiendo' => 'escribir',
+                        'leyendo' => 'leer',
+                        'hablando' => 'hablar',
+                        'estudiando' => 'estudiar',
+                    ];
+
+                    // =====================================================
+                    // EXTRAER PALABRAS CLAVE
+                    // =====================================================
+
+                    $palabrasClave = [];
+
+                    foreach($actividades as $act){
+
+                        // quitar "1."
+                        $textoLimpio = preg_replace(
+                            '/^\d+\.\s*/',
+                            '',
+                            trim($act)
+                        );
+
+                        // minúsculas
+                        $textoLimpio = mb_strtolower(
+                            $textoLimpio,
+                            'UTF-8'
+                        );
+
+                        // quitar símbolos raros
+                        $textoLimpio = preg_replace(
+                            '/[^a-záéíóúñü0-9 ]/iu',
+                            '',
+                            $textoLimpio
+                        );
+
+                        // dividir palabras
+                        $palabras = explode(' ', $textoLimpio);
+
+                        foreach($palabras as $p){
+
+                            $p = trim($p);
+
+                            if(isset($sinonimos[$p])){
+                                $p = $sinonimos[$p];
+                            }
+
+                            if(
+                                strlen($p) > 3 &&
+                                !in_array($p, $stopWords)
+                            ){
+                                $palabrasClave[] = $p;
+                            }
+                        }
+                    }
+
+                    // quitar repetidos
+                    $palabrasClave = array_unique($palabrasClave);
+
+                @endphp
+
+                <div class="grid grid-cols-3 gap-3">
+
+                    @foreach($palabrasClave as $palabra)
+                        @php
+                            $rutaFinal = '';
+                            $pictoEnBD = null;
+                            $palabraBuscar = trim(mb_strtolower($palabra, 'UTF-8'));
+
+                            // 1. BUSCAR COINCIDENCIA EXACTA EN TITLE
+                            $pictoEnBD = $bibliotecaPictos->first(function($p) use ($palabraBuscar){
+                                return trim(mb_strtolower($p->Title, 'UTF-8')) === $palabraBuscar;
+                            });
+
+                            // 2. BUSCAR EN SEARCHTEXT
+                            if(!$pictoEnBD){
+                                $pictoEnBD = $bibliotecaPictos->first(function($p) use ($palabraBuscar){
+                                    $tags = array_map('trim', explode(',', mb_strtolower($p->SearchText ?? '', 'UTF-8')));
+                                    return in_array($palabraBuscar, $tags);
+                                });
+                            }
+
+                            // 3. BUSQUEDA PARCIAL
+                            if(!$pictoEnBD){
+                                $pictoEnBD = $bibliotecaPictos->first(function($p) use ($palabraBuscar){
+                                    return str_contains(trim(mb_strtolower($p->Title, 'UTF-8')), $palabraBuscar);
+                                });
+                            }
+
+                            // GENERAR RUTA
+                            if($pictoEnBD){
+                                $rutaFinal = asset(ltrim($pictoEnBD->ImagePath, '/'));
+                            }
+                        @endphp
+
+                        <div class="flex flex-col items-center">
+                            <div class="bg-white border-2 border-dashed border-slate-100 rounded-2xl mb-1 w-full aspect-square flex items-center justify-center overflow-hidden shadow-sm">
+                                @if($rutaFinal)
+                                    <img 
+                                        src="{{ $rutaFinal }}" 
+                                        alt="{{ $palabra }}" 
+                                        class="w-full h-full object-contain p-1"
+                                    >
+                                @else
+                                    <div class="text-center p-1">
+                                        <p class="text-[9px] text-orange-500 leading-tight">NO ENCONTRADO</p>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <p class="text-[8px] leading-tight text-center font-bold text-slate-500 uppercase w-full break-words">
+                                {{ $palabra }}
+                            </p>
                         </div>
-                        <h3 class="font-black text-slate-800 uppercase text-xl tracking-tight">{{ $dia }}</h3>
-                    </div>
+                    @endforeach
 
-                    <div class="bg-slate-50 p-4 rounded-2xl mb-6 border border-slate-100 min-h-[80px]">
-                        <p class="text-sm text-slate-600 font-medium italic">
-                            {{ $paciente->{"agenda_$dia"} ?? 'Sin actividades asignadas' }}
+                   
+                    <div class="mt-8 p-6 bg-slate-50 border border-slate-200 rounded-2xl w-full col-span-3 shadow-sm">
+                        <h5 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Texto original:</h5>
+                        <p class="text-base leading-relaxed text-slate-700 italic">
+                            {{ $textoAgenda }}
                         </p>
                     </div>
 
-                    @php
-                        $textoAgenda = $paciente->{"agenda_$dia"};
-                        $actividades = preg_split('/(?=\d+\.)/', $textoAgenda, -1, PREG_SPLIT_NO_EMPTY);
-                    @endphp
-
-                    <div class="grid grid-cols-3 gap-4"> 
-                        @for($i = 1; $i <= 6; $i++)
-                            @php
-                                $tareaActual = '';
-                                $nombreImagen = '';
-                                $rutaFinal = '';
-
-                                foreach($actividades as $act) {
-                                    if(str_starts_with(trim($act), $i . ".")) {
-                                        $tareaActual = trim($act);
-                                        // 1. Limpiamos el nombre: quitamos el número inicial y espacios
-                                        $crudo = trim(preg_replace('/^\d+\.\s*/', '', $tareaActual));
-                                        
-                                        // 2. Normalización para búsqueda de archivos:
-                                        // Convertimos a minúsculas y manejamos caracteres especiales
-                                        $nombreImagen = strtolower($crudo);
-                                        $buscar = array('á', 'é', 'í', 'ó', 'ú', 'ñ', ' ');
-                                        $reemplazar = array('a', 'e', 'i', 'o', 'u', 'n', '_');
-                                        $nombreImagen = str_replace($buscar, $reemplazar, $nombreImagen);
-                                        break;
-                                    }
-                                }
-
-                                if($nombreImagen) {
-                                    foreach($carpetasPictos as $carpeta) {
-                                        // Intentamos buscar el archivo con .png
-                                        $archivo = "pictogramas/{$carpeta}/{$nombreImagen}.png";
-                                        if(file_exists(public_path($archivo))) {
-                                            $rutaFinal = asset($archivo);
-                                            break;
-                                        }
-                                    }
-                                }
-                            @endphp
-
-                            <div class="flex flex-col items-center">
-                                <div class="slot-grid bg-white border-2 border-dashed border-slate-200 rounded-2xl mb-2 w-full aspect-square flex items-center justify-center overflow-hidden bg-slate-50/30">
-                                    @if($rutaFinal)
-                                        <img src="{{ $rutaFinal }}" alt="{{ $nombreImagen }}" class="w-full h-full object-contain p-2">
-                                    @else
-                                        <span class="text-3xl text-slate-200 font-bold">{{ $i }}</span>
-                                    @endif
-                                </div>
-                                @if($tareaActual)
-                                    <p class="text-[10px] leading-tight text-center font-bold text-slate-500 uppercase truncate w-full">
-                                        {{ trim(preg_replace('/^\d+\.\s*/', '', $tareaActual)) }}
-                                    </p>
-                                @endif
-                            </div>
-                        @endfor
-                    </div>
                 </div>
-            @endforeach
-        </div>
+
+            </div>
+
+        @endforeach
+
+
+</div>
+
     </div>
+
+</div>
+
+{{-- ================= MODAL ================= --}}
+<div x-show="openModal"
+     class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4"
+     style="display:none;">
+
+    <div
+        class="bg-white max-w-lg w-full p-8 rounded-[2.5rem] shadow-2xl"
+        @click.away="openModal = false">
+
+        <div class="text-center mb-6">
+
+            <h2 class="text-2xl font-black text-slate-900">
+                Reporte de Sesión
+            </h2>
+
+            <p class="text-slate-500 text-sm">
+                Registrar seguimiento semanal
+            </p>
+
+        </div>
+
+        {{-- ================= FORMULARIO ================= --}}
+        <form action="{{ route('seguimiento.store', $paciente->id) }}"
+              method="POST"
+              class="space-y-4">
+
+            @csrf
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <div>
+                    <label class="block font-bold text-xs mb-1">
+                        Autonomía
+                    </label>
+
+                    <select name="autonomia"
+                            class="w-full p-3 rounded-xl border"
+                            required>
+
+                        <option value="20">Apoyo Total</option>
+                        <option value="40">Apoyo Parcial</option>
+                        <option value="60">Apoyo Verbal</option>
+                        <option value="80">Supervisión</option>
+                        <option value="100">Independiente</option>
+
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-xs mb-1">
+                        Comunicación
+                    </label>
+
+                    <select name="comunicacion"
+                            class="w-full p-3 rounded-xl border"
+                            required>
+
+                        <option value="20">Baja</option>
+                        <option value="60">Uso de pictogramas</option>
+                        <option value="100">Fluida</option>
+
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <div>
+                    <label class="block font-bold text-xs mb-1">
+                        Estabilidad
+                    </label>
+
+                    <select name="estabilidad"
+                            class="w-full p-3 rounded-xl border"
+                            required>
+
+                        <option value="20">Desregulado</option>
+                        <option value="60">Intermedio</option>
+                        <option value="100">Calmo</option>
+
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-xs mb-1">
+                        Compromiso
+                    </label>
+
+                    <select name="compromiso"
+                            class="w-full p-3 rounded-xl border"
+                            required>
+
+                        <option value="20">Rechazo</option>
+                        <option value="60">Parcial</option>
+                        <option value="100">Excelente</option>
+
+                    </select>
+                </div>
+
+            </div>
+
+            <div>
+
+                <label class="block font-bold text-xs mb-1">
+                    Consistencia
+                </label>
+
+                <select name="consistencia"
+                        class="w-full p-3 rounded-xl border"
+                        required>
+
+                    <option value="20">No completó</option>
+                    <option value="60">Parcial</option>
+                    <option value="100">Completó todo</option>
+
+                </select>
+
+            </div>
+
+            <div>
+
+                <label class="block font-bold text-xs mb-1">
+                    Observaciones
+                </label>
+
+                <textarea
+                    name="observacion_padre"
+                    class="w-full p-4 rounded-2xl border h-24 resize-none"
+                    placeholder="Comentarios..."></textarea>
+
+            </div>
+
+            <div class="flex gap-3 pt-2">
+
+                <button
+                    type="button"
+                    @click="openModal = false"
+                    class="flex-1 py-4 font-bold text-slate-400">
+
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="flex-[2] bg-cyan-500 text-white py-4 rounded-2xl font-black">
+
+                    Guardar Reporte
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{{-- ================= SCRIPTS ================= --}}
+<script>
+
+document.addEventListener('DOMContentLoaded', function(){
+
+    // ================= RADAR =================
+    const ctxRadar =
+        document.getElementById('radarProgreso').getContext('2d');
+
+    const datosRadar =
+        {!! json_encode($dataRadar ?? [0,0,0,0,0]) !!};
+
+    new Chart(ctxRadar, {
+
+        type:'radar',
+
+        data:{
+            labels:[
+                'Autonomía',
+                'Comunicación',
+                'Estabilidad',
+                'Compromiso',
+                'Consistencia'
+            ],
+
+            datasets:[{
+                label:'Evaluación Actual',
+                data:datosRadar,
+                backgroundColor:'rgba(34,211,238,.2)',
+                borderColor:'#22d3ee',
+                pointBackgroundColor:'#22d3ee',
+                borderWidth:2
+            }]
+        },
+
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+
+            scales:{
+                r:{
+                    suggestedMin:0,
+                    suggestedMax:100,
+
+                    ticks:{
+                        stepSize:20
+                    }
+                }
+            }
+        }
+    });
+
+    // ================= LINEA =================
+    const ctxLinea =
+        document.getElementById('lineaEvolucion').getContext('2d');
+
+    const datosAutonomia =
+        {!! json_encode($datosAutonomia ?? [null,null,null,null]) !!};
+
+    const datosComunicacion =
+        {!! json_encode($datosComunicacion ?? [null,null,null,null]) !!};
+
+    const datosEstabilidad =
+        {!! json_encode($datosEstabilidad ?? [null,null,null,null]) !!};
+
+    new Chart(ctxLinea, {
+
+        type:'line',
+
+        data:{
+
+            labels:[
+                'Semana 1',
+                'Semana 2',
+                'Semana 3',
+                'Semana 4'
+            ],
+
+            datasets:[
+
+                {
+                    label:'Autonomía',
+                    data:datosAutonomia,
+                    borderColor:'#22d3ee',
+                    tension:.3
+                },
+
+                {
+                    label:'Comunicación',
+                    data:datosComunicacion,
+                    borderColor:'#3b82f6',
+                    tension:.3
+                },
+
+                {
+                    label:'Estabilidad',
+                    data:datosEstabilidad,
+                    borderColor:'#6366f1',
+                    tension:.3
+                }
+
+            ]
+        },
+
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+
+            scales:{
+                y:{
+                    min:0,
+                    max:100,
+
+                    ticks:{
+                        stepSize:20
+                    }
+                }
+            }
+        }
+
+    });
+
+});
+
+</script>
+
 </body>
 </html>

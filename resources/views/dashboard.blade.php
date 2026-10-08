@@ -141,7 +141,7 @@
                     </div>
                     <div class="bg-slate-50 p-3 rounded-2xl">
                         <p class="text-[10px] uppercase font-black text-slate-400">ID Paciente</p>
-                        <p class="font-bold text-slate-700">#{{ str_pad($paciente->id, 3, '0', STR_PAD_LEFT) }}</p>
+                        <p class="font-bold text-slate-700 font-mono">#{{ str_pad($paciente->id, 3, '0', STR_PAD_LEFT) }}</p>
                     </div>
                 </div>
             </div>
@@ -213,15 +213,99 @@
                         </div>
                     </details>
 
-                    <div class="accordion-item-modern border-l-4 border-green-500 bg-green-50">
+                    {{-- III. Evolución Clínica - Con Planificación Semanal Integrada --}}
+                    <div class="accordion-item-modern border-l-4 border-green-500 bg-green-50/70">
                         <div class="p-5 font-bold text-green-700 flex justify-between">
-                            <span><i class="fas fa-chart-line me-3"></i> III. Evolución Clínica</span>
+                            <span><i class="fas fa-chart-line me-3"></i> III. Evolución Clínica / Planificación Semanal</span>
                             <span class="text-[10px] bg-green-200 px-2 py-1 rounded">SISTEMA INTELIGENTE ACTIVO</span>
                         </div>
-                        <div class="p-6 pt-0 text-green-800 text-sm">
-                            <p>Sugerencias generadas por la IA para este paciente: <br>
-                               <span class="italic text-slate-600">{{ $paciente->sugerencias_pictogramas }}</span>
+                        <div class="p-6 pt-0 text-slate-700 text-sm">
+                            <p class="mb-4 text-green-800 font-semibold">
+                                <i class="fas fa-info-circle me-1"></i> Sugerencias de apoyos visuales generados automáticamente según el registro del tutor:
                             </p>
+
+                            @php
+                                // Decodificar el JSON de sugerencias guardado por la IA en el Paciente
+                                $sugerencias = [];
+                                if (!empty($paciente->sugerencias_pictogramas)) {
+                                    $sugerencias = is_array($paciente->sugerencias_pictogramas) 
+                                        ? $paciente->sugerencias_pictogramas 
+                                        : json_decode($paciente->sugerencias_pictogramas, true);
+                                }
+                                
+                                // Lista de días de la semana para iterar
+                                $diasSemana = [
+                                    'lunes' => 'LUNES',
+                                    'martes' => 'MARTES',
+                                    'miercoles' => 'MIERCOLES',
+                                    'jueves' => 'JUEVES',
+                                    'viernes' => 'VIERNES',
+                                    'sabado' => 'SABADO',
+                                    'domingo' => 'DOMINGO'
+                                ];
+                            @endphp
+
+                            {{-- Grid principal de planificación --}}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                                @foreach ($diasSemana as $keyDia => $nombreDia)
+                                    <div class="bg-white p-4 rounded-xl border border-slate-150 shadow-sm">
+                                        <div class="flex items-center gap-2 mb-3 border-b border-slate-100 pb-2">
+                                            <span class="p-1.5 bg-emerald-50 text-emerald-600 rounded-md text-xs">
+                                                <i class="fas fa-calendar-day"></i>
+                                            </span>
+                                            <h4 class="font-bold text-xs tracking-wider text-slate-700">{{ $nombreDia }}</h4>
+                                        </div>
+
+                                        <div class="grid grid-cols-3 gap-2">
+                                            @for ($i = 0; $i < 6; $i++)
+                                                @php
+                                                    // 1. Obtenemos el pictograma de la posición actual
+                                                    $pictograma = $sugerencias[$keyDia][$i] ?? null;
+                                                @endphp
+
+                                                @if ($pictograma)
+                                                    @php
+                                                        // 2. Lógica de limpieza: Eliminamos 'storage/' si existe y lo reconstruimos
+                                                        $rawPath = $pictograma['image_path'] ?? '';
+                                                        $cleanPath = str_replace('storage/', '', $rawPath);
+                                                        $finalUrl = asset('storage/' . $cleanPath);
+                                                    @endphp
+                                                    
+                                                    <img src="{{ asset('storage/' . str_replace('storage/', '', $pictograma['image_path'])) }}" 
+                                                    alt="{{ $pictograma['title'] }}" 
+                                                    class="w-10 h-10 object-contain"
+                                                    onerror="this.src='{{ asset('images/placeholder.png') }}'">
+                                                        <span class="text-[8px] text-center font-bold text-emerald-800 truncate w-full mt-0.5">
+                                                            {{ $pictograma['title'] }}
+                                                        </span>
+                                                    </div>
+                                                @else
+                                                    <div class="border border-dashed border-slate-200 rounded-lg flex items-center justify-center h-20 text-slate-300 font-bold text-xs bg-slate-50/40">
+                                                        {{ $i + 1 }}
+                                                    </div>
+                                                @endif
+                                            @endfor
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            {{-- SECCIÓN DE AUDITORÍA Y DEPURACIÓN CLÍNICA (SÓLO DE PRUEBA) --}}
+                            <div class="mt-6 border-t border-dashed border-green-200 pt-4">
+                                <details class="cursor-pointer">
+                                    <summary class="text-xs text-green-700 font-bold hover:underline select-none">
+                                        <i class="fas fa-bug me-1"></i> Auditoría de Datos IA (Haz clic para ver qué guardó tu Base de Datos)
+                                    </summary>
+                                    <div class="mt-2 bg-slate-800 text-slate-100 font-mono text-[10px] p-4 rounded-xl overflow-x-auto max-h-48">
+                                        @if(empty($paciente->sugerencias_pictogramas))
+                                            <span class="text-red-400">[Estado] La columna 'sugerencias_pictogramas' está VACÍA o NULL en tu tabla de MySQL. Crea un perfil con palabras clave.</span>
+                                        @else
+                                            <span>[JSON en Base de Datos]:</span>
+                                            <pre class="mt-1 text-emerald-300">{{ json_encode($sugerencias, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                                        @endif
+                                    </div>
+                                </details>
+                            </div>
                         </div>
                     </div>
                 </div>
